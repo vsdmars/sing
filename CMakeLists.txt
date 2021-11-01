@@ -15,6 +15,13 @@ docs_early_return()
 include(cmake/project-is-top-level.cmake)
 include(cmake/variables.cmake)
 
+# ---- find needed libraries
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(gstreamer REQUIRED IMPORTED_TARGET gstreamer-1.0)
+
+# ---- compile options ----
+set(COMPILE_OPTIONS -g -Wall -Wconversion -Wdouble-promotion -Weffc++ -Wextra -Wfloat-equal -Wformat=2 -Wno-error=unused-variable -Wnull-dereference -Wold-style-cast -Wpedantic -Wshadow -Wuninitialized -Wunreachable-code -Wredundant-move -Wpessimizing-move -Wpadded)
+
 # ---- Declare library ----
 
 add_library(
@@ -29,6 +36,8 @@ target_include_directories(
 )
 
 target_compile_features(sing_lib PUBLIC cxx_std_20)
+target_compile_options(sing_lib PRIVATE ${gstreamer_CFLAGS})
+target_link_libraries(sing_lib PRIVATE ${gstreamer_LIBRARIES})
 
 # ---- Declare executable ----
 
